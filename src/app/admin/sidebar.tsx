@@ -65,7 +65,7 @@ const AdminSideBar = () => {
           )}
         >
           <TbLogin className="w-10 h-10" />
-          <h1>Login</h1>
+          <h1>Logout</h1>
         </button>
       </div>
     </aside>

@@ -35,7 +35,7 @@ export default function ManagerLayout({
         <ManagerSideBar />
       </section>
       <section className="flex-1 py-3 pr-3">
-        <div className="bg-p2 max-h-full rounded p-3">{children}</div>
+        <div className="bg-p2 min-h-full rounded p-3">{children}</div>
       </section>
     </main>
   ) : (

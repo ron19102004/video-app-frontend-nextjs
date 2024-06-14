@@ -52,10 +52,18 @@ const VideoCardManager: React.FC<IVideoCardManager> = ({ video }) => {
           </div>
         </div>
         <div className="flex justify-start items-center gap-2 h-10">
-          <h1 className="bg-p1 h-full rounded-md px-6 py-2 font-bold">Action: </h1>
-          <button className="bg-p3_2 px-3 py-2 h-full rounded-md">Edit</button>
-          <button className="bg-blue-700 px-3 h-full py-2 rounded-md">Privacy</button>
-          <button className="bg-red-700 px-3 h-full py-2 rounded-md">Delete</button>
+          <h1 className="bg-p1 h-full rounded-md px-6 py-2 font-bold hover:underline">
+            Action:{" "}
+          </h1>
+          <button className="bg-p3_2 px-3 py-2 h-full rounded-md  hover:underline">
+            Edit
+          </button>
+          <button className="bg-blue-700 px-3 h-full py-2 rounded-md  hover:underline">
+            Privacy
+          </button>
+          <button className="bg-red-700 px-3 h-full py-2 rounded-md  hover:underline">
+            Delete
+          </button>
         </div>
       </div>
 

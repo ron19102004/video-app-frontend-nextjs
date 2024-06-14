@@ -2,7 +2,7 @@
 import { cn } from "@/lib/utils";
 import React, { use } from "react";
 import { INavBarMobile } from "../(personal)/navigation-bar-mobile";
-import { TbMovie, TbHome,TbLogin } from "react-icons/tb";
+import { TbMovie, TbHome, TbLogin, TbNewSection } from "react-icons/tb";
 import ForEach from "@/lib/foreach-component";
 import { usePathname, useRouter } from "next/navigation";
 import Link from "next/link";
@@ -20,6 +20,7 @@ const navBars: Array<INavSideBar> = [
     href: "/manager/videos",
     icon: TbMovie,
   },
+  { title: "New video", href: "/manager/videos/new", icon: TbNewSection },
 ];
 const ManagerSideBar = () => {
   const pathname = usePathname();
@@ -28,7 +29,7 @@ const ManagerSideBar = () => {
   return (
     <aside className={cn("bg-p2 h-full rounded flex flex-col justify-between")}>
       <ul className="space-y-2 p-2">
-      <h1 className="font-bold text-2xl">Studio Management</h1>
+        <h1 className="font-bold text-2xl">Studio Management</h1>
         <ForEach
           list={navBars}
           render={(item: INavSideBar) => (
@@ -60,7 +61,7 @@ const ManagerSideBar = () => {
           )}
         >
           <TbLogin className="w-10 h-10" />
-          <h1>Login</h1>
+          <h1>Logout</h1>
         </button>
       </div>
     </aside>

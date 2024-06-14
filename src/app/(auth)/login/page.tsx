@@ -2,7 +2,7 @@
 import { Input } from "@/components/ui/input";
 import { LoginRequest } from "@/interfaces/user.i";
 import { cn } from "@/lib/utils";
-import React, { use } from "react";
+import React, { use, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { joiResolver } from "@hookform/resolvers/joi";
 import Joi from "joi";
@@ -11,6 +11,9 @@ import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { AuthContext } from "@/contexts/authContext";
 import { useRouter } from "next/navigation";
+import Cookies from "js-cookie";
+import COOKIES_CONSTANT from "@/interfaces/cookies-constant.i";
+import { useToast } from "@/components/ui/use-toast";
 
 const loginScheme = Joi.object({
   username: Joi.string().required().min(5),
@@ -31,6 +34,19 @@ const Login: React.FC = () => {
       router.push(href);
     });
   };
+  const { toast } = useToast();
+  useEffect(() => {
+    if (useAuth.isAuth) {
+      toast({
+        title: "You are already logged in",
+      });
+      router.push("/");
+    }
+    const token = Cookies.get(COOKIES_CONSTANT.ACCESS_TOKEN);
+    if (token) {
+      useAuth.checkAuthentication();
+    }
+  }, [useAuth.isAuth]);
   return (
     <div
       className={cn(
