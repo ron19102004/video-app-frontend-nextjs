@@ -2,7 +2,7 @@
 import { cn } from "@/lib/utils";
 import React, { use } from "react";
 import { INavBarMobile } from "../(personal)/navigation-bar-mobile";
-import { TbCategoryFilled, TbWorld, TbHome, TbLogin } from "react-icons/tb";
+import { TbCategoryFilled, TbWorld, TbHome, TbLogin,TbFileReport  } from "react-icons/tb";
 import ForEach from "@/lib/foreach-component";
 import { usePathname, useRouter } from "next/navigation";
 import Link from "next/link";
@@ -25,6 +25,11 @@ const navBars: Array<INavSideBar> = [
     href: "/admin/countries",
     icon: TbWorld,
   },
+  {
+    title: "Reports",
+    href: "/admin/reports",
+    icon: TbFileReport,
+  }
 ];
 const AdminSideBar = () => {
   const pathname = usePathname();

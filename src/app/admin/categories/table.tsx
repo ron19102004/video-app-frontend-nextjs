@@ -66,8 +66,8 @@ const CategoriesTable: FC<ICategoriesTableProps> = ({
                     <Image
                       src={item.image ?? ""}
                       alt={item.name}
-                      width={50}
-                      height={50}
+                      width={500}
+                      height={500}
                       className="w-20 h-20 object-cover rounded-lg"
                     />
                   </td>

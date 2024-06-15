@@ -16,7 +16,7 @@ const Categories = () => {
   };
   useEffect(() => {
     init();
-  }, []);
+  }, [init]);
   return (
     <div>
       <h1 className="font-bold text-xl">Category manager</h1>

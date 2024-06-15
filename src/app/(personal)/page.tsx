@@ -10,19 +10,23 @@ import { useRouter } from "next/navigation";
 import React from "react";
 
 const HomePage = () => {
+  const [pageNumber, setPageNumber] = React.useState<number>(0);
   const [videos, setVideos] = React.useState<Array<Video>>([]);
   const [categories, setCategories] = React.useState<Array<Category>>([]);
   const { getVideos } = useVideoClient();
   const { getCategories } = useCategory();
   const router = useRouter();
   const init = async () => {
-    const [vids, cates] = await Promise.all([getVideos(0), getCategories()]);
+    const [vids, cates] = await Promise.all([
+      getVideos(pageNumber),
+      getCategories(),
+    ]);
     setVideos(vids);
     setCategories(cates);
   };
   React.useEffect(() => {
     init();
-  }, []);
+  }, [pageNumber]);
   return (
     <div className="flex p-3 space-x-3">
       <div className="flex-1">
@@ -32,6 +36,16 @@ const HomePage = () => {
             list={videos}
             render={(item: Video) => <VideoCard video={item} />}
           />
+          {videos.length === 10 && (
+            <Button
+              className="w-full h-[200px] font-bold text-xl"
+              onClick={() => {
+                setPageNumber(pageNumber + 1);
+              }}
+            >
+              More
+            </Button>
+          )}
         </ul>
       </div>
       <div className="basis-1/4 hidden lg:block">

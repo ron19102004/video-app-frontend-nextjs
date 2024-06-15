@@ -7,17 +7,21 @@ import { create } from "zustand";
 
 interface IVideoClient {
   getVideos(pageNumber: number): Promise<Array<Video>>;
-  getVideoBySlug(slug:string):Promise<Video|null>
+  getVideoBySlug(slug: string): Promise<Video | null>;
+  getVideoByUploader(uploaderId: number): Promise<Array<Video>>;
 }
-const useVideoClient = create<IVideoClient>((set) => {
+const useVideoClient = create<IVideoClient>(() => {
   const videoController: IVideoClientController = new VideoController(http);
   return {
     getVideos: async (pageNumber: number) => {
       return await videoController.getVideos(pageNumber);
     },
-    getVideoBySlug: async (slug:string)=>{
-      return await videoController.findVideoBySlug(slug)
-    }
+    getVideoBySlug: async (slug: string) => {
+      return await videoController.findVideoBySlug(slug);
+    },
+    getVideoByUploader: async (uploaderId: number) => {
+      return await videoController.getVideosByUploaderId(uploaderId);
+    },
   };
 });
 export default useVideoClient;

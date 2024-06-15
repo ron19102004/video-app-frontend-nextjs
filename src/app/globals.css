@@ -75,12 +75,12 @@
   }
 }
 
-.scroll-custom,
+
 body::-webkit-scrollbar {
   width: 8px;
   background-color: #393e46;
 }
-.scroll-custom,
+
 body::-webkit-scrollbar-thumb {
   background-color: #05885d;
   border-radius: 10px;

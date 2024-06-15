@@ -14,7 +14,8 @@ export interface IUseAuth {
   vip: Vip | null;
   login(
     loginRequest: LoginRequest,
-    redirect: (href: string) => void
+    redirect: (href: string) => void,
+    tfaAction: (token: string) => void
   ): Promise<void>;
   logout(redirect: (href: string) => void): void;
   register(
@@ -22,6 +23,11 @@ export interface IUseAuth {
     redirect: (href: string) => void
   ): Promise<void>;
   checkAuthentication(): void;
+  verifyOTP(
+    data: { otp: string; token: string },
+    redirect: (href: string) => void,
+    toast: (message: string) => void
+  ): Promise<void>;
 }
 const useAuth = create<IUseAuth>((set) => {
   const authController: IAuthController = new AuthController(http);
@@ -31,25 +37,30 @@ const useAuth = create<IUseAuth>((set) => {
     vip: null,
     login: async (
       loginRequest: LoginRequest,
-      redirect: (href: string) => void
+      redirect: (href: string) => void,
+      tfaAction: (token: string) => void
     ) => {
       await authController.login<IResponseLayout<IDataLoginResponse>>(
         loginRequest,
         (data) => {
-          console.log(data);
           if (data.status && data.data) {
-            set({
-              isAuth: true,
-              userCurrent: data.data.user,
-              vip: data.data.vip,
-            });
-            Cookies.set(COOKIES_CONSTANT.IS_AUTHENTICATED, "true", {
-              expires: 4,
-            });
-            Cookies.set(COOKIES_CONSTANT.ACCESS_TOKEN, data.data.token, {
-              expires: 4,
-            });
-            redirect("/");
+            const dt = data.data;
+            if (!dt.TFA) {
+              set({
+                isAuth: true,
+                userCurrent: data.data.user,
+                vip: data.data.vip,
+              });
+              Cookies.set(COOKIES_CONSTANT.IS_AUTHENTICATED, "true", {
+                expires: 4,
+              });
+              Cookies.set(COOKIES_CONSTANT.ACCESS_TOKEN, data.data.token, {
+                expires: 4,
+              });
+              redirect("/");
+            } else {
+              tfaAction(dt.token);
+            }
           }
         },
         (err) => {
@@ -101,10 +112,37 @@ const useAuth = create<IUseAuth>((set) => {
         }
       );
     },
+    verifyOTP: async (
+      data: { otp: string; token: string },
+      redirect: (href: string) => void,
+      toast: (message: string) => void
+    ) => {
+      await authController.verifyOTP({
+        data: data,
+        error(err) {
+          console.log(err);
+          toast("Error verifying OTP token")
+        },
+        success(data) {
+          set({
+            isAuth: true,
+            userCurrent: data.user,
+            vip: data.vip,
+          });
+          Cookies.set(COOKIES_CONSTANT.IS_AUTHENTICATED, "true", {
+            expires: 4,
+          });
+          Cookies.set(COOKIES_CONSTANT.ACCESS_TOKEN, data.token, {
+            expires: 4,
+          });
+          redirect("/");
+        },
+      });
+    },
   };
 });
 export default useAuth;
-interface IDataLoginResponse {
+export interface IDataLoginResponse {
   TFA: boolean;
   token: string;
   user: User;

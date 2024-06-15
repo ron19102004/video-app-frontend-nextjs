@@ -1,3 +1,5 @@
+import { IDataLoginResponse } from "@/hooks/useAuth";
+import { IRequest } from "@/interfaces";
 import COOKIES_CONSTANT from "@/interfaces/cookies-constant.i";
 import { LoginRequest, RegisterRequest, User, Vip } from "@/interfaces/user.i";
 import { API, Http, IResponseLayout } from "@/lib/http";
@@ -22,6 +24,9 @@ export interface IAuthController {
     success: (data: IDataCheckAuthentication) => void,
     error: (err: any) => void
   ): void;
+  verifyOTP(
+    request: IRequest<{ otp: string; token: string }, IDataLoginResponse, any>
+  ): Promise<void>;
 }
 export default class AuthController implements IAuthController {
   private AuthURL = API.AuthURL;
@@ -29,6 +34,25 @@ export default class AuthController implements IAuthController {
   private FALSE: string = "false";
   constructor(http: Http) {
     this.http = http;
+  }
+  async verifyOTP(
+    request: IRequest<{ otp: string; token: string }, IDataLoginResponse, any>
+  ): Promise<void> {
+    await this.http
+      .post<IResponseLayout<IDataLoginResponse>>(
+        this.AuthURL.VERIFY_OTP,
+        request.data
+      )
+      .then((response) => {
+        if (response.status === 200) {
+          if (response.data && response.data.data && response.data.status) {
+            request.success(response.data.data);
+          } else {
+            request.error(response.data.message);
+          }
+        }
+      })
+      .catch((error) => request.error(error));
   }
   async login<T>(
     request: LoginRequest,

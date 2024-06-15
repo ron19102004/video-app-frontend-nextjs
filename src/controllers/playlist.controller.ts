@@ -11,10 +11,10 @@ export interface IPlaylistController {
     request: IRequest<{ name: string; isPublic: boolean }, null, any>
   ): Promise<void>;
   delete(request: IRequest<{ id: number }, null, any>): Promise<void>;
-  pushVideoToPlaylist(
+  pushVideoIntoPlaylist(
     request: IRequest<{ playlistId: number; videoId: number }, null, any>
   ): Promise<void>;
-  deleteVideoByVideoPlaylistId(
+  deleteVideoPlaylistByVideoPlaylistId(
     request: IRequest<{ videoPlaylistId: number }, null, any>
   ): Promise<void>;
 }
@@ -84,7 +84,7 @@ export default class PlaylistController implements IPlaylistController {
       })
       .catch((err) => request.error(err));
   }
-  async pushVideoToPlaylist(
+  async pushVideoIntoPlaylist(
     request: IRequest<{ playlistId: number; videoId: number }, null, any>
   ): Promise<void> {
     const accessToken = Cookies.get(COOKIES_CONSTANT.ACCESS_TOKEN);
@@ -115,7 +115,7 @@ export default class PlaylistController implements IPlaylistController {
       })
       .catch((err) => request.error(err));
   }
-  async deleteVideoByVideoPlaylistId(
+  async deleteVideoPlaylistByVideoPlaylistId(
     request: IRequest<{ videoPlaylistId: number }, null, any>
   ): Promise<void> {
     const accessToken = Cookies.get(COOKIES_CONSTANT.ACCESS_TOKEN);

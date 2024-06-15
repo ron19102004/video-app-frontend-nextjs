@@ -2,7 +2,7 @@
 import { Input } from "@/components/ui/input";
 import { LoginRequest } from "@/interfaces/user.i";
 import { cn } from "@/lib/utils";
-import React, { use, useEffect } from "react";
+import React, { use, useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { joiResolver } from "@hookform/resolvers/joi";
 import Joi from "joi";
@@ -14,6 +14,8 @@ import { useRouter } from "next/navigation";
 import Cookies from "js-cookie";
 import COOKIES_CONSTANT from "@/interfaces/cookies-constant.i";
 import { useToast } from "@/components/ui/use-toast";
+import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
+import InputOTPControlled from "./otp";
 
 const loginScheme = Joi.object({
   username: Joi.string().required().min(5),
@@ -22,6 +24,13 @@ const loginScheme = Joi.object({
 const Login: React.FC = () => {
   const router = useRouter();
   const useAuth = use(AuthContext);
+  const [otp, setOtp] = useState<{
+    isOpen: boolean;
+    token: string;
+  }>({
+    isOpen: false,
+    token: "",
+  });
   const {
     register,
     handleSubmit,
@@ -30,9 +39,15 @@ const Login: React.FC = () => {
     resolver: joiResolver(loginScheme),
   });
   const onSubmit = (data: LoginRequest) => {
-    useAuth.login(data, (href: string) => {
-      router.push(href);
-    });
+    useAuth.login(
+      data,
+      (href: string) => {
+        router.push(href);
+      },
+      (token) => {
+        setOtp({ ...otp, isOpen: true, token: token });
+      }
+    );
   };
   const { toast } = useToast();
   useEffect(() => {
@@ -89,6 +104,20 @@ const Login: React.FC = () => {
           <Link href={"/register"}>Register</Link>
         </p>
       </form>
+      <div>
+        <Dialog
+          open={otp.isOpen}
+          onOpenChange={(value: boolean) => {
+            setOtp({ ...otp, isOpen: value });
+          }}
+        >
+          <DialogContent className="sm:max-w-[425px] bg-p1">
+            <div className="grid gap-4 py-4">
+              <InputOTPControlled token={otp.token} />
+            </div>
+          </DialogContent>
+        </Dialog>
+      </div>
     </div>
   );
 };

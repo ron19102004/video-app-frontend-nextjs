@@ -11,8 +11,9 @@ import { API, Http, IResponseLayout } from "@/lib/http";
 import Cookies from "js-cookie";
 
 export interface IVideoClientController {
-  getVideos(pageNumber: number): Promise<Array<Video> | []>;
+  getVideos(pageNumber: number): Promise<Array<Video>>;
   findVideoBySlug(slug: string): Promise<Video | null>;
+  getVideosByUploaderId(uploaderId: number): Promise<Array<Video>>;
 }
 export interface IVideoManagerController {
   createInfoVideo(
@@ -25,6 +26,14 @@ export interface IVideoManagerController {
     request: IRequest<IUploadSourceRequest, null, any>
   ): Promise<void>;
   myVideos(): Promise<Array<Video>>;
+  deleteVideoById(request: IRequest<{ id: number }, null, any>): Promise<void>;
+  changePrivacyVip(
+    request: IRequest<
+      { id: number; isPublic: boolean; isVip: boolean },
+      null,
+      any
+    >
+  ): Promise<void>;
 }
 export interface ISearchVideoController {
   search(request: ISearchRequest): Promise<Array<Video>>;
@@ -40,6 +49,80 @@ export default class VideoController
   constructor(http: Http) {
     this.http = http;
   }
+  async getVideosByUploaderId(uploaderId: number): Promise<Array<Video>> {
+    const response = await this.http.get<IResponseLayout<Array<Video>>>(
+      this.VideoURL.GET_VIDEOS_BY_UPLOADER(uploaderId)
+    );
+    return response.data.data ?? [];
+  }
+  async changePrivacyVip(
+    request: IRequest<
+      { id: number; isPublic: boolean; isVip: boolean },
+      null,
+      any
+    >
+  ): Promise<void> {
+    const accessToken = Cookies.get(COOKIES_CONSTANT.ACCESS_TOKEN);
+    if (!accessToken) {
+      request.error("Access token not found");
+      return;
+    }
+    await this.http
+      .patch<IResponseLayout<null>>(
+        this.VideoURL.CHANGE_PRIVACY_VIP(request.data.id),
+        {
+          isPublic: request.data.isPublic,
+          isVip: request.data.isVip,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+          },
+        }
+      )
+      .then((response) => {
+        if (response.status === 200) {
+          if (response.data.status) {
+            request.success(null);
+          } else {
+            request.error(response.data.message);
+          }
+        }
+      })
+      .catch((error) => {
+        request.error(error);
+      });
+  }
+  async deleteVideoById(
+    request: IRequest<{ id: number }, null, any>
+  ): Promise<void> {
+    const accessToken = Cookies.get(COOKIES_CONSTANT.ACCESS_TOKEN);
+    if (!accessToken) {
+      request.error("Access token not found");
+      return;
+    }
+    await this.http
+      .delete<IResponseLayout<null>>(
+        this.VideoURL.DELETE_VIDEO(request.data.id),
+        {
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+          },
+        }
+      )
+      .then((response) => {
+        if (response.status === 200) {
+          if (response.data.status) {
+            request.success(null);
+          } else {
+            request.error(response.data.message);
+          }
+        }
+      })
+      .catch((error) => {
+        request.error(error);
+      });
+  }
   async myVideos(): Promise<Array<Video>> {
     const accessToken = Cookies.get(COOKIES_CONSTANT.ACCESS_TOKEN);
     const response = await this.http.get<IResponseLayout<Array<Video>>>(
@@ -52,7 +135,7 @@ export default class VideoController
     );
     return response.data.data ?? [];
   }
-  async getVideos(pageNumber: number): Promise<Array<Video> | []> {
+  async getVideos(pageNumber: number): Promise<Array<Video>> {
     const response = await this.http.get<IResponseLayout<Array<Video>>>(
       this.VideoURL.GET_VIDEOS(pageNumber)
     );

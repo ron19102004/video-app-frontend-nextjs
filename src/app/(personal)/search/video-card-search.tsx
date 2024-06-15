@@ -16,8 +16,8 @@ const VideoCardSearch: React.FC<IVideoCardSearchProps> = ({ video }) => {
           <Image
             src={video.image}
             alt={video.name}
-            width={100}
-            height={100}
+            width={500}
+            height={500}
             className="w-full h-52 md:h-44 lg:h-40 object-cover rounded shadow-md"
           />
         </Link>
@@ -33,8 +33,8 @@ const VideoCardSearch: React.FC<IVideoCardSearchProps> = ({ video }) => {
             <Image
               src={video?.uploader?.imageURL ?? ""}
               alt={video?.uploader.fullName ?? "unknown"}
-              width={40}
-              height={40}
+              width={500}
+              height={500}
               className="rounded-full w-10 h-10 object-cover"
             />
           </div>

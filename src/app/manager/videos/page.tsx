@@ -8,7 +8,8 @@ import { TbNewSection, TbReload } from "react-icons/tb";
 const VideoCardManager = lazy(() => import("./video-card-manager"));
 const MyVideoManagement = () => {
   const [myVideos, setMyVideos] = useState<Array<Video>>([]);
-  const { getMyVideos } = useVideoManager();
+  const { getMyVideos, changePrivacyVip, deleteVideo, pushPoster, pushSource } =
+    useVideoManager();
   const init = async () => {
     const vids = await getMyVideos();
     setMyVideos(vids);
@@ -39,13 +40,25 @@ const MyVideoManagement = () => {
           <span>Reload</span>
         </button>
       </div>
-      <ul className="w-full overflow-y-auto max-h-[80vh] space-y-2">
+      <div>
+        <h1>
+          Ring color: <span className="bg-red-600 w-5 h-5"></span>
+        </h1>
+      </div>
+      <ul className="w-full overflow-y-auto max-h-[80vh] space-y-3 p-3">
         <ForEach
           list={myVideos}
           render={(item: Video) => {
             return (
               <Suspense>
-                <VideoCardManager video={item} />
+                <VideoCardManager
+                  pushPoster={pushPoster}
+                  pushSource={pushSource}
+                  initData={init}
+                  deleteVideo={deleteVideo}
+                  video={item}
+                  changePrivacyVip={changePrivacyVip}
+                />
               </Suspense>
             );
           }}

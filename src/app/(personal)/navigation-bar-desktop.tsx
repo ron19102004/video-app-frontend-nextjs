@@ -2,7 +2,7 @@
 import ForEach from "@/lib/foreach-component";
 import React, { Fragment, use } from "react";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { cn } from "@/lib/utils";
 import Image from "next/image";
 import { VideoIcon } from "@/assets";
@@ -30,8 +30,9 @@ const navBars: Array<INavBar> = [
   },
 ];
 const NavigationBarDesktop = () => {
+  const router = useRouter()
   const pathname = usePathname();
-  const { isAuth, userCurrent } = React.use(AuthContext);
+  const { isAuth, userCurrent,logout } = React.use(AuthContext);
   const [isAdmin, setIsAdmin] = React.useState<boolean>(false);
   React.useEffect(() => {
     if (isAuth && userCurrent?.role === Role.admin) {
@@ -68,12 +69,18 @@ const NavigationBarDesktop = () => {
         <div className="flex justify-start items-center gap-2">
           <SlUser />
           {isAdmin ? (
-            <Link href={"/admin"} className="hover:text-red-500 hover:underline">
+            <Link
+              href={"/admin"}
+              className="hover:text-red-500 hover:underline"
+            >
               Admin
             </Link>
           ) : null}
           {userCurrent?.confirmed ? (
-            <Link href={"/manager"} className="hover:text-blue-500 hover:underline">
+            <Link
+              href={"/manager"}
+              className="hover:text-blue-500 hover:underline"
+            >
               Manager
             </Link>
           ) : null}
@@ -91,11 +98,16 @@ const NavigationBarDesktop = () => {
             </div>
           </Fragment>
         ) : (
-          <Fragment>
+          <div className="flex justify-start items-center gap-2">
             <Link href={"/my"} className="hover:text-p3 font-bold">
               {userCurrent?.fullName}
             </Link>
-          </Fragment>
+            <h1 className="hover:text-p3 cursor-pointer" onClick={()=>{
+              logout((href)=>{
+                router.push("/")
+              })
+            }}>Logout</h1>
+          </div>
         )}
       </div>
     </header>

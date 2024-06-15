@@ -67,6 +67,7 @@ export const API = {
     LOGIN: "/auth/login",
     REGISTER: "/auth/register",
     CHECK_AUTHENTICATION: "/users/info",
+    VERIFY_OTP: "/auth/verify-OTP",
   },
   CategoryURL: {
     GET_ALL: "/categories",
@@ -87,6 +88,10 @@ export const API = {
         ? `/users/info-confirmed?id=${userId}`
         : `/users/loggedIn/info-confirmed?id=${userId}`;
     },
+    SUBSCRIBE: (id: number | string) => "/users/subscribe?id=" + id,
+    UNSUBSCRIBE: (id: number | string) => "/users/unsubscribe?id=" + id,
+    CONFIRM_USER: (username: string) => `/users/confirm-user/${username}`,
+    GET_SUBSCRIBE_USER: (id: number) => "/users/subscribe-info?id=" + id,
   },
   VideoURL: {
     GET_VIDEOS: (pageNumber: number) => `/videos?page=${pageNumber}`,
@@ -96,13 +101,16 @@ export const API = {
       if (data.name) query = [...query, "name=" + data.name];
       if (data.category_id)
         query = [...query, "category_id=" + data.category_id];
-      if (data.country_id) query = [...query, "country_id=" + data];
+      if (data.country_id) query = [...query, "country_id=" + data.country_id];
       return `/videos/search?${query.join("&")}`;
     },
     CREATE_VIDEO_INFORMATION: "/videos/new-info",
     UPLOAD_POSTER: (videoId: number) => `/videos/upload-image/${videoId}`,
     UPLOAD_SOURCE: (videoId: number) => `/videos/upload-video/${videoId}`,
     GET_MY_VIDEOS: "/videos/my-videos",
+    DELETE_VIDEO: (id: number) => `/videos/${id}`,
+    CHANGE_PRIVACY_VIP: (id: number) => `/videos/change-privacy-vip/${id}`,
+    GET_VIDEOS_BY_UPLOADER: (uploader_id:number) => `/videos?uploader_id=${uploader_id}`
   },
   PlaylistURL: {
     GET_MY_PLAYLIST: "/playlists/my",
@@ -113,5 +121,11 @@ export const API = {
       "/playlists/video?videoPlaylistId=" + id,
     GET_USER_CONFIRMED_PLAYLISTS: (userId: number | string) =>
       "/playlists/user-confirmed?userId=" + userId,
+  },
+  ReportURL: {
+    CREATE_REPORT: "/reports/new",
+    HANDLE_REPORT: (id: number) => `/reports/${id}/handle`,
+    GET_REPORTS_CHECKED: "/reports/all-checked",
+    GET_REPORTS_CHECKED_YET: "/reports/all-checked-yet",
   },
 };

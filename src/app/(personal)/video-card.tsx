@@ -21,7 +21,7 @@ const VideoCard: React.FC<IVideoCardProps> = ({ video, className }) => {
           <Image
             src={video.image}
             alt={video.name}
-            width={150}
+            width={500}
             height={500}
             className={cn(
               "w-full h-[200px] object-cover overflow-hidden transition-all hover:scale-125 hover:opacity-15 rounded"

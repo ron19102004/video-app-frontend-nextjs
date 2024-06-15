@@ -27,7 +27,7 @@ const SearchResult = () => {
     init();
   }, [searchParams]);
   return (
-    <div>
+    <div className="p-3">
       <h1 className="font-bold text-xl">
         {result.length} results for &quot;{query}&quot;
       </h1>

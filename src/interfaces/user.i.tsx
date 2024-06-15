@@ -37,3 +37,7 @@ export interface Vip {
   issuedAt: string;
   updatedAt: string;
 }
+export interface SubscribeInfo {
+  subscribed: number;
+  subscribing: number;
+}

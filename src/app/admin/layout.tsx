@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { use, useEffect, useState } from "react";
 import AdminSideBar from "./sidebar";
 import Link from "next/link";
+import { Button } from "@/components/ui/button";
 
 export default function AdminLayout({
   children,
@@ -23,14 +24,16 @@ export default function AdminLayout({
   if (!isAuth) {
     return (
       <main className="">
-        <Link className="bg-p3_2 p-2 rounded-md" href={"/login"}>
-          Login
-        </Link>
+        <div className="p-3">
+          <Button className="bg-p3_2 p-2 rounded-md">
+            <Link href={"/login"}>Login</Link>
+          </Button>
+        </div>
       </main>
     );
   }
   return allowed ? (
-    <main className="flex min-w-screen min-h-screen">
+    <main className="hidden md:flex min-w-screen min-h-screen">
       <section className="md:basis-/4 lg:basis-1/5 p-3">
         <AdminSideBar />
       </section>

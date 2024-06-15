@@ -9,11 +9,16 @@ import {
 } from "@/interfaces/video.i";
 import http from "@/lib/http";
 import { create } from "zustand";
-interface IUseVideoManager {
-  pushNewInfo(
-    info: IDataNewInformation,
+export interface IUseVideoManagerChangePrivacy {
+  changePrivacyVip(
+    data: { id: number; isPublic: boolean; isVip: boolean },
     toast: (message: string) => void
-  ): Promise<number>;
+  ): Promise<void>;
+}
+export interface IUseVideoManagerDeleteVideo {
+  deleteVideo(id: number, toast: (message: string) => void): Promise<void>;
+}
+export interface IUseVideoManagerPosterAndSource{
   pushPoster(
     data: IUploadPosterRequest,
     toast: (message: string) => void
@@ -22,6 +27,14 @@ interface IUseVideoManager {
     data: IUploadSourceRequest,
     toast: (message: string) => void
   ): Promise<void>;
+}
+interface IUseVideoManager
+  extends IUseVideoManagerChangePrivacy,
+    IUseVideoManagerDeleteVideo,IUseVideoManagerPosterAndSource {
+  pushNewInfo(
+    info: IDataNewInformation,
+    toast: (message: string) => void
+  ): Promise<number>;
   getMyVideos(): Promise<Array<Video>>;
 }
 const useVideoManager = create<IUseVideoManager>(() => {
@@ -77,6 +90,33 @@ const useVideoManager = create<IUseVideoManager>(() => {
     },
     getMyVideos: async () => {
       return await videoController.myVideos();
+    },
+    deleteVideo: async (id: number, toast: (message: string) => void) => {
+      await videoController.deleteVideoById({
+        data: { id: id },
+        error(err) {
+          console.log(err);
+          toast("Error deleting video");
+        },
+        success() {
+          toast("Video deleted successfully");
+        },
+      });
+    },
+    changePrivacyVip: async (
+      data: { id: number; isPublic: boolean; isVip: boolean },
+      toast: (message: string) => void
+    ) => {
+      await videoController.changePrivacyVip({
+        data: data,
+        error(err) {
+          console.log(err);
+          toast("Error changing privacy or vip");
+        },
+        success() {
+          toast("Privacy or vip changed successfully");
+        },
+      });
     },
   };
 });
